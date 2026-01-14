@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Expense {
+ id                Int     @id @default(autoincrement())
+ date              DateTime @default(now())
+ expense_item_id   Int
+ money             Int
+ note              String?
+}
+
+model Category {
+ id                Int     @id @default(autoincrement())
+ name              String
+}
+
+model ExpenseItem {
+  id                Int     @id @default(autoincrement())
+  category_id       Int
+  name              String
+  is_deleted        Boolean
+}
+
+model　Budget {
+  id                Int     @id @default(autoincrement())
+  year              Int
+  month             Int
+  expense_item_id   Int
+  money             Int
+}
+
+model　BudgetDefault {
+  id                Int     @id @default(autoincrement())
+  expense_item_id   Int
+  money             Int
+}
