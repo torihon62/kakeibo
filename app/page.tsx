@@ -9,11 +9,12 @@ export default async function Home() {
   const expenseItems = await prisma.expenseItem.findMany();
   return (
     <Box>
-      <BaseLayout />
-      <MainGrid>
-        <Title>金額入力</Title>
-        <InputActualForm expenseItems={expenseItems} />
-      </MainGrid>
+      <BaseLayout>
+        <MainGrid>
+          <Title>金額入力</Title>
+          <InputActualForm expenseItems={expenseItems} />
+        </MainGrid>
+      </BaseLayout>
     </Box>
   );
 }

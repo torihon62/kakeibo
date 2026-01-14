@@ -4,6 +4,7 @@ import { ExpenseItem } from "@/prisma/generated/prisma/browser";
 import { Box, Button, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
 import FormItemTitle from "./FormItemTitle";
+import { useSnackbarProviderContext } from "@/components/providers/SnackbarProvider";
 
 interface Props {
   expenseItems: ExpenseItem[];
@@ -16,6 +17,7 @@ export default function InputActualForm(props: Props) {
     "0"
   )}-${String(d.getDate()).padStart(2, "0")}`;
   const FieldPadding = <Box sx={{ py: 1 }} />;
+  const snackbar = useSnackbarProviderContext();
 
   const [inputDate, setInputDate] = useState(dateString);
   const [selectedExpenseItem, setSelectedExpenseItem] = useState<number>(
@@ -42,8 +44,14 @@ export default function InputActualForm(props: Props) {
           },
         }),
       });
-      const resJson = await res.json();
-      console.log(resJson);
+      if (res.status >= 400) {
+        snackbar.openSnackbar(
+          `エラーが発生しました。code: ${res.status}`,
+          "error"
+        );
+        return;
+      }
+      snackbar.openSnackbar("入力内容を保存しました。", "success");
     })();
   };
 
