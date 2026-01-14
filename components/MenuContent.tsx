@@ -18,13 +18,13 @@ const mainListItems = [
   },
   { text: "予算入力", path: "/input-budget", icon: <AssignmentRoundedIcon /> },
   {
-    text: "予算デフォルト設定",
-    path: "/setting-default-budget",
+    text: "費目設定",
+    path: "/setting-expense-item",
     icon: <SettingsRoundedIcon />,
   },
   {
-    text: "費目設定",
-    path: "/setting-expense-item",
+    text: "予算デフォルト設定",
+    path: "/setting-default-budget",
     icon: <SettingsRoundedIcon />,
   },
 ];
