@@ -6,8 +6,11 @@ import "dotenv/config";
 import { ExpenseProvider } from "@/components/providers/ExpenseProvider";
 import ExpenseDisplayDateSelector from "@/components/ExpenseDisplayDateSelector";
 import ExpenseStatDisplay from "@/components/ExpenseStatDisplay";
+import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
+  const expenseItems = await prisma.expenseItem.findMany();
+
   return (
     <Box>
       <BaseLayout>
@@ -24,7 +27,7 @@ export default async function Home() {
               <Title>予実表示</Title>
               <ExpenseDisplayDateSelector />
             </Box>
-            <ExpenseStatDisplay />
+            <ExpenseStatDisplay expenseItems={expenseItems} />
           </ExpenseProvider>
         </MainGrid>
       </BaseLayout>
