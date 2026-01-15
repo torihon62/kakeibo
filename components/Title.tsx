@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 interface Props {
   children: React.ReactNode;
@@ -6,12 +6,14 @@ interface Props {
 
 export default function Title(props: Props) {
   return (
-    <Typography
-      component={"h2"}
-      variant={"h2"}
-      sx={{ fontSize: "large", fontWeight: "bold", py: 2 }}
-    >
-      {props.children}
-    </Typography>
+    <Box sx={{ my: 3 }}>
+      <Typography
+        component={"h2"}
+        variant={"h2"}
+        sx={{ fontSize: "x-large", fontWeight: "bold" }}
+      >
+        {props.children}
+      </Typography>
+    </Box>
   );
 }

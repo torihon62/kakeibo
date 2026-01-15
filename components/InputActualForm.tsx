@@ -19,6 +19,8 @@ export default function InputActualForm(props: Props) {
   const FieldPadding = <Box sx={{ py: 1 }} />;
   const snackbar = useSnackbarProviderContext();
 
+  const [busy, setBusy] = useState(false);
+
   const [inputDate, setInputDate] = useState(dateString);
   const [selectedExpenseItem, setSelectedExpenseItem] = useState<number>(
     props.expenseItems[0].id
@@ -28,9 +30,10 @@ export default function InputActualForm(props: Props) {
 
   const onSave = () => {
     if (inputActual === undefined) return;
+    setBusy(true);
 
     (async () => {
-      const res = await fetch("/api/expense", {
+      const res = await fetch("/api/expenses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,6 +47,7 @@ export default function InputActualForm(props: Props) {
           },
         }),
       });
+      setBusy(false);
       if (res.status >= 400) {
         snackbar.openSnackbar(
           `エラーが発生しました。code: ${res.status}`,
@@ -56,7 +60,7 @@ export default function InputActualForm(props: Props) {
   };
 
   return (
-    <Box sx={{ width: { xs: "100%", md: "40%" } }}>
+    <Box>
       <FormItemTitle>日付</FormItemTitle>
       <TextField
         type="date"
@@ -93,13 +97,15 @@ export default function InputActualForm(props: Props) {
       <TextField
         value={inputNote}
         onChange={(e) => setInputNote(e.target.value)}
-        multiline
-        rows={3}
         size="small"
         fullWidth
       />
       {FieldPadding}
-      <Button onClick={onSave} variant="contained">
+      <Button
+        onClick={onSave}
+        variant="contained"
+        disabled={busy || !inputActual}
+      >
         保存
       </Button>
     </Box>

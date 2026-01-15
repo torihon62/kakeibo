@@ -1,6 +1,6 @@
 import BaseLayout from "@/components/BaseLayout";
 import MainGrid from "@/components/MainGrid";
-import { Title } from "@mui/icons-material";
+import Title from "@/components/Title";
 import { Box } from "@mui/material";
 
 export default async function Home() {
