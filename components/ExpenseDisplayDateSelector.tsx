@@ -23,10 +23,10 @@ export default function ExpenseDisplayDateSelector() {
 
   useEffect(() => {
     if (selectedYearMonth === undefined) return;
-    console.log("fetch Expense");
 
     (async () => {
       await ctx.fetchExpenses(selectedYearMonth);
+      await ctx.fetchBudgets(selectedYearMonth);
     })();
   }, [selectedYearMonth]);
 

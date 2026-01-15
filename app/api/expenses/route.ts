@@ -1,12 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { transJPDate } from "@/lib/transDate";
 import { NextRequest, NextResponse } from "next/server";
-
-const transJPDate = (jpDate: string) => {
-  const m = jpDate.match(/(\d+)年(\d+)月/);
-  if (m === null) return new Date();
-
-  return new Date(Number(m[1]), Number(m[2]) - 1);
-};
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

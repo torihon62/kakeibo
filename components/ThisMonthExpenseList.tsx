@@ -15,6 +15,10 @@ import { deepEqual } from "@/lib/deepEqual";
 import { Box, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useThisMonthExpenseProviderContext } from "./providers/ThisMonthExpenseProvider";
+import {
+  getExpenseItemIdByName,
+  getExpenseItemNameById,
+} from "@/lib/expenseItemUtil";
 
 interface Props {
   expenseItemList: ExpenseItem[];
@@ -29,6 +33,40 @@ interface RowProps {
 }
 
 export default function ThisMonthExpenseList(props: Props) {
+  const columns: GridColDef[] = [
+    {
+      field: "date",
+      type: "date",
+      headerName: "日付",
+      width: 180,
+      editable: true,
+    },
+    {
+      field: "expenseItem",
+      headerName: "費目",
+      type: "singleSelect",
+      valueOptions: props.expenseItemList.map((l) => l.name),
+      editable: true,
+      align: "left",
+      headerAlign: "left",
+    },
+    {
+      field: "money",
+      headerName: "金額",
+      type: "number",
+      align: "left",
+      headerAlign: "left",
+      editable: true,
+    },
+    {
+      field: "note",
+      headerName: "備考",
+      type: "string",
+      width: 220,
+      editable: true,
+    },
+  ];
+
   const ctx = useThisMonthExpenseProviderContext();
 
   const [rows, setRows] = useState<GridRowsProp | undefined>();
@@ -47,7 +85,7 @@ export default function ThisMonthExpenseList(props: Props) {
         id: e.id,
         date: new Date(e.date),
         expenseItem:
-          props.expenseItemList.find((l) => l.id === e.expense_item_id)?.name ??
+          getExpenseItemNameById(props.expenseItemList, e.expense_item_id) ??
           "",
         money: e.money,
         note: e.note,
@@ -78,8 +116,10 @@ export default function ThisMonthExpenseList(props: Props) {
       body: JSON.stringify({
         date: updatedRow.date,
         expense_item_id:
-          props.expenseItemList.find((l) => l.name === updatedRow.expenseItem)
-            ?.id ?? 0,
+          getExpenseItemIdByName(
+            props.expenseItemList,
+            updatedRow.expenseItem
+          ) ?? 0,
         money: updatedRow.money,
         note: updatedRow.note,
       }),
@@ -147,36 +187,3 @@ export default function ThisMonthExpenseList(props: Props) {
     </div>
   );
 }
-
-const columns: GridColDef[] = [
-  {
-    field: "date",
-    type: "date",
-    headerName: "日付",
-    width: 180,
-    editable: true,
-  },
-  {
-    field: "expenseItem",
-    headerName: "費目",
-    type: "string",
-    editable: true,
-    align: "left",
-    headerAlign: "left",
-  },
-  {
-    field: "money",
-    headerName: "金額",
-    type: "number",
-    align: "left",
-    headerAlign: "left",
-    editable: true,
-  },
-  {
-    field: "note",
-    headerName: "備考",
-    type: "string",
-    width: 220,
-    editable: true,
-  },
-];
