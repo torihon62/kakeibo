@@ -5,12 +5,15 @@ import { Box, Button, MenuItem, Select, TextField } from "@mui/material";
 import { useState } from "react";
 import FormItemTitle from "./FormItemTitle";
 import { useSnackbarProviderContext } from "@/components/providers/SnackbarProvider";
+import { useThisMonthExpenseProviderContext } from "./providers/ThisMonthExpenseProvider";
 
 interface Props {
   expenseItems: ExpenseItem[];
 }
 
 export default function InputActualForm(props: Props) {
+  const ctx = useThisMonthExpenseProviderContext();
+
   const d = new Date();
   const dateString = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
     2,
@@ -56,6 +59,7 @@ export default function InputActualForm(props: Props) {
         return;
       }
       snackbar.openSnackbar("入力内容を保存しました。", "success");
+      ctx.toggleLoadTrigger();
     })();
   };
 

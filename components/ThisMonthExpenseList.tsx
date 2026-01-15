@@ -14,6 +14,7 @@ import CircularIndeterminate from "./CircularIndeterminate";
 import { deepEqual } from "@/lib/deepEqual";
 import { Box, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useThisMonthExpenseProviderContext } from "./providers/ThisMonthExpenseProvider";
 
 interface Props {
   expenseItemList: ExpenseItem[];
@@ -28,31 +29,39 @@ interface RowProps {
 }
 
 export default function ThisMonthExpenseList(props: Props) {
+  const ctx = useThisMonthExpenseProviderContext();
+
   const [rows, setRows] = useState<GridRowsProp | undefined>();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
 
+  const fetchExpense = async () => {
+    const res = await fetch("/api/expenses", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json: Expense[] = await res.json();
+    setRows(
+      json.map((e) => ({
+        id: e.id,
+        date: new Date(e.date),
+        expenseItem:
+          props.expenseItemList.find((l) => l.id === e.expense_item_id)?.name ??
+          "",
+        money: e.money,
+        note: e.note,
+      }))
+    );
+  };
+
   useEffect(() => {
+    if (!ctx.loadTrigger) return;
     (async () => {
-      const res = await fetch("/api/expenses", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const json: Expense[] = await res.json();
-      setRows(
-        json.map((e) => ({
-          id: e.id,
-          date: new Date(e.date),
-          expenseItem:
-            props.expenseItemList.find((l) => l.id === e.expense_item_id)
-              ?.name ?? "",
-          money: e.money,
-          note: e.note,
-        }))
-      );
+      await fetchExpense();
+      ctx.toggleLoadTrigger();
     })();
-  }, []);
+  }, [ctx.loadTrigger]);
 
   const handleTableEdit = async (
     updatedRow: RowProps,
