@@ -7,9 +7,11 @@ interface ExpenseProviderContextType {
   expenses: Expense[];
   yearMonths: string[];
   budgets: Budget[];
+  isExpenseInit: boolean;
   fetchExpenses: (yearMonth?: string) => Promise<void>;
   fetchYearMonths: () => Promise<void>;
   fetchBudgets: (yearMonth?: string) => Promise<void>;
+  expenseInitComplete: () => void;
 }
 
 const ExpenseProviderContext = createContext<ExpenseProviderContextType>(
@@ -28,6 +30,7 @@ export const ExpenseProvider = (props: Props) => {
   const [expenses, setExpense] = useState<Expense[]>([]);
   const [yearMonths, setYearMonths] = useState<string[]>([]);
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [isExpenseInit, setIsExpenseInit] = useState(false);
 
   const fetchExpenses = async (yearMonth?: string) => {
     const res = await fetch(
@@ -67,13 +70,16 @@ export const ExpenseProvider = (props: Props) => {
     const json = await res.json();
     setBudgets(json);
   };
+
   const value: ExpenseProviderContextType = {
     expenses,
     yearMonths,
     budgets,
+    isExpenseInit,
     fetchExpenses,
     fetchYearMonths,
     fetchBudgets,
+    expenseInitComplete: () => setIsExpenseInit(true),
   };
 
   return (

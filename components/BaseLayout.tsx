@@ -12,7 +12,6 @@ export default function BaseLayout(props: Props) {
     <SnackbarProvider>
       <CssBaseline />
       <AppNavBar />
-      <SideMenu />
       {props.children}
     </SnackbarProvider>
   );

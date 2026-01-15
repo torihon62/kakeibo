@@ -27,6 +27,7 @@ export default function ExpenseDisplayDateSelector() {
     (async () => {
       await ctx.fetchExpenses(selectedYearMonth);
       await ctx.fetchBudgets(selectedYearMonth);
+      ctx.expenseInitComplete();
     })();
   }, [selectedYearMonth]);
 

@@ -68,7 +68,7 @@ export default function ExpenseStatDisplay(props: Props) {
 
   console.log(aggregateData);
 
-  return expenses.length === 0 ? (
+  return !ctx.isExpenseInit ? (
     <CircularIndeterminate />
   ) : (
     <Grid container spacing={2}>
