@@ -7,7 +7,7 @@ type Params = {
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Params }
+  { params }: { params: Promise<Params> }
 ) {
   const { expense_id } = await params;
   const body = await request.json();
@@ -17,5 +17,5 @@ export async function PUT(
     data: body,
   });
 
-  return NextResponse.json({ status: 200, res });
+  return NextResponse.json({ status: 200, response: res });
 }

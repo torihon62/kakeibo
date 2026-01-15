@@ -3,8 +3,6 @@
 import { createContext, useContext, useState } from "react";
 import { Expense } from "@/prisma/generated/prisma/browser";
 
-type Severity = "info" | "success" | "warning" | "error";
-
 interface ExpenseProviderContextType {
   expenses: Expense[];
   yearMonths: string[];
