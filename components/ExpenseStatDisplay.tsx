@@ -21,7 +21,10 @@ import {
   ExpenseItem,
 } from "@/prisma/generated/prisma/browser";
 import CircularIndeterminate from "./CircularIndeterminate";
-import { getExpenseItemNameById } from "@/lib/expenseItemUtil";
+import {
+  getExpenseItemIdByName,
+  getExpenseItemNameById,
+} from "@/lib/expenseItemUtil";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts/PieChart";
 
 interface Props {
@@ -41,17 +44,26 @@ const makeAggregateData = (
     map.set(expenseItemName, (map.get(expenseItemName) ?? 0) + item.money);
   }
 
-  return Array.from(map.entries())
-    .map(([label, value], index) => ({
-      id: index,
-      label,
-      value,
-      budget: budgets.find(
-        (b) => getExpenseItemNameById(expenseItems, b.expense_item_id) === label
-      )?.money,
-    }))
-    .sort((a, b) => b.value - a.value)
-    .map((item, i) => ({ ...item, id: i }));
+  const actuals = Array.from(map.entries()).map(([label, value]) => ({
+    label,
+    value,
+  }));
+
+  return budgets.map((budget, i) => {
+    const actual = actuals.find(
+      (a) =>
+        getExpenseItemIdByName(expenseItems, a.label) === budget.expense_item_id
+    );
+
+    return {
+      id: i,
+      label: actual
+        ? actual.label
+        : getExpenseItemNameById(expenseItems, budget.expense_item_id),
+      value: actual ? actual.value : 0,
+      budget: budget.money,
+    };
+  });
 };
 
 export default function ExpenseStatDisplay(props: Props) {
@@ -66,7 +78,9 @@ export default function ExpenseStatDisplay(props: Props) {
     budgets
   );
 
-  console.log(aggregateData);
+  const sortedAggregateData = [...aggregateData].sort(
+    (a, b) => b.value - a.value
+  );
 
   return !ctx.isExpenseInit ? (
     <CircularIndeterminate />
@@ -127,8 +141,8 @@ export default function ExpenseStatDisplay(props: Props) {
                   <TableCell component="th" scope="row">
                     {d.label}
                   </TableCell>
-                  <TableCell>{d.budget}</TableCell>
-                  <TableCell>{d.value}</TableCell>
+                  <TableCell>{d.budget?.toLocaleString()}</TableCell>
+                  <TableCell>{d.value.toLocaleString()}</TableCell>
                   <TableCell
                     sx={{
                       color:
@@ -137,7 +151,7 @@ export default function ExpenseStatDisplay(props: Props) {
                           : theme.palette.error.main,
                     }}
                   >
-                    {(d.budget ?? d.value) - d.value}
+                    {((d.budget ?? d.value) - d.value).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
@@ -151,9 +165,9 @@ export default function ExpenseStatDisplay(props: Props) {
             series={[
               {
                 arcLabel: (item) => `${item.value.toLocaleString()}円`,
-                arcLabelMinAngle: 10,
+                arcLabelMinAngle: 12,
                 arcLabelRadius: "80%",
-                data: aggregateData,
+                data: sortedAggregateData.filter((d) => d.value !== 0),
               },
             ]}
             sx={{
