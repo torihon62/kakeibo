@@ -46,3 +46,11 @@ model　BudgetDefault {
   expense_item_id   Int
   money             Int
 }
+
+model Income {
+  id                Int     @id @default(autoincrement())
+  year              Int
+  month             Int
+  expense_item_id   Int
+  money             Int
+}

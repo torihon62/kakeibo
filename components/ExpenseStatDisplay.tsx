@@ -10,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   useTheme,
 } from "@mui/material";
 import StatCard from "@/components/StatCard";
@@ -87,6 +88,17 @@ export default function ExpenseStatDisplay(props: Props) {
   ) : (
     <Grid container spacing={2}>
       {/* 1列目 */}
+      <Grid size={{ xs: 12 }}>
+        <Typography component={"h3"}>収入</Typography>
+      </Grid>
+      <Grid size={{ xs: 12, md: 3 }}>
+        <StatCard title="収入" value={`${allMoney.toLocaleString()} 円`} />
+      </Grid>
+
+      {/* 2列目 */}
+      <Grid size={{ xs: 12 }}>
+        <Typography component={"h3"}>実績</Typography>
+      </Grid>
       <Grid size={{ xs: 12, md: 3 }}>
         <StatCard title="支出合計" value={`${allMoney.toLocaleString()} 円`} />
       </Grid>
@@ -112,7 +124,7 @@ export default function ExpenseStatDisplay(props: Props) {
       </Grid>
       <Grid size={{ xs: 12, md: 3 }}></Grid>
 
-      {/* 2列目 */}
+      {/* 3列目 */}
       <Grid size={{ xs: 12, md: 6 }}>
         <TableContainer component={Paper}>
           <Table size="small" sx={{ tableLayout: "auto" }}>
